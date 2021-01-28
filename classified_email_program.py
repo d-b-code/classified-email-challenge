@@ -1,14 +1,25 @@
 """
 classified_email_program.py
 
+This program is designed to check the text of an email for classified words or phrases.
+
+The core function(censor_email_text) does the following: 
+If  classified words/phrases are found it flags the email as 'True', and censors the classified words/phrases.
+If no classified words/phrases are found, the email is flagged as 'False' and the email text is unaltered.
+
 """
 import re
 from typing import List, Dict, Tuple
 from builtins import str
 
 
-def censor_email_text(email_text: str, classified_words: str)-> Dict[str, Tuple[bool, list, str]]:
-    """ Return a dictionary that contains the T/F flag and censored/uncensored email text. """
+def censor_email_text(email_text: str, classified_words: List[str])-> Dict[str, Tuple[bool, list, str]]:
+    """
+     Return a dictionary that contains the T/F flag and censored/uncensored email text. 
+     Parameters:
+     email_text: string that is the text of the email that needs to be checked and censored
+     classified_words: List of words/phrases to check for censoring in email_text
+    """
     result = {'flag': False, 'email': email_text}
     classified_regex = re.compile('|' .join(classified_words), re.IGNORECASE)
     if classified_regex.search(email_text):
@@ -17,7 +28,11 @@ def censor_email_text(email_text: str, classified_words: str)-> Dict[str, Tuple[
     return result
 
 def sanitize_user_words(user_words: str)-> List[str]:
-    """ Return a list of words to check for in the email. """
+    """ 
+    Return a list of words to check for in the email.
+    Parameters:
+    user_words: string of user words that needs to be split and stripped of white space
+    """
 
     split_words = user_words.split('#')
     sanitized_words = [x.strip() for x in split_words]
@@ -48,14 +63,18 @@ they gave the last full measure of devotion -- that we here highly resolve that 
 for the people, shall not perish from the earth. Abraham Lincoln November 19, 1863"""
 
 def process_user_menu_input(ans:str)->bool:
-    """ Process user input to execute specified function or break loop. """
+    """ 
+    Process user input to execute specified function or break loop.
+    Parameters:
+    ans: string from user used to determin operation 
+    """
     user_classified = []
     user_text = ""
     if ans == '1':
         print(sample)
         
     elif ans == '2':
-        user_classified = sanitize_user_words(input("Please enter the words you wish to check for, separated by a #:"))
+        user_classified = sanitize_user_words(input("Please enter the words you wish to check for, separated by a #: "))
         result = censor_email_text(sample, user_classified)
         [print(category,': ', result[category]) for category in result]
         
